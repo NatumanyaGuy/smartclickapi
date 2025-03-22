@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Login to Dockerhub
+      run: echo "${{secrets.DOCKERHUB_TOKEN}}" | docker login -u "${{secrets.DOCKERHUB_USERNAME}}" --password-stdin
+    
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag guynatumanya/smartclickapi:latest
+
+    - name: Push to Dockerhub
+      run: docker push guynatumanya/smartclickapi:latest
